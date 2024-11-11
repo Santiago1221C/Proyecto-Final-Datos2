@@ -21,4 +21,4 @@ Para ver el resultado  copiar en la linea de comando
 ./main
  
 # Motivos de solucion
-La solucion de este trabajo consiste en la creacion de un grafo de lista anidada ....
+La solucion de este trabajo consiste en la creacion de un grafo de lista adyacente donde creamos aristas aleatoriamente para los fantasmas , uno para la cereza y otro para pacman , implementamos el algoritmo de distra y tambien Manhatan para encontrar los 3 primeros vertices mas cercanos de cada nodo , además utilizamos una cola de prioridad para contener estos tres primeros nodos  y como parte grafica tenemos  un tablero que representara el camino mas corto pasando por la cereza para alcanzar al fantasma. 
