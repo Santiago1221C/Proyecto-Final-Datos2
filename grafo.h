@@ -5,44 +5,38 @@
 #include <vector>
 #include <queue>
 #include <iostream>
+#include "tablero.h"
 using namespace std;
+
+struct Vertice {
+    std::string nombre;
+    int x, y;
+};
+
+struct Arista {
+    int distancia;
+};
 
 class Grafo {
     private:
-    // Estructura para almacenar la distancia y dificultad de una conexión
-    struct Arista {
-        int distancia;
-        };
-    // Estructura para almacenar la posición de un vértice (puede ser en un plano 2D, por ejemplo)
-    struct Vertice {
-        string nombre;
-        int x, y; // Coordenadas (pueden ser diferentes según la representación)
-    };
-
-    // Mapa de adyacencia: cada nodo tiene un mapa de vecinos con sus respectivas aristas (distancia y dificultad)
-    unordered_map<string, unordered_map<string, Arista>> grafo;
-    string primerNodo;
-
-    // Mapas para almacenar el estado en el algoritmo de Dijkstra
-    unordered_map<string, int> costos;
-    unordered_map<string, string> padres;
-    // Función para calcular la distancia entre dos vértices con Manhatan
-    int calcularDistancia(const Vertice& v1, const Vertice& v2) const;
-    // Función para calcular el costo real considerando la distancia y dificultad
-    void conectarTresVerticesCercanos(const Vertice& vertice);
-
+    std::unordered_map<std::string, Vertice> vertices;  // Mapa de vértices
+    std::unordered_map<std::string, std::unordered_map<std::string, Arista>> grafo;  // Mapa de adyacencia para aristas
+    std::string primerNodo;  // Nodo inicial para el grafo
     public:
     Grafo(); // Constructor
     ~Grafo(); // Destructor
 
-    // Métodos principales
-    void insertarArista(const string& nodo, const string& vecino, int distancia);
-    void setNodoInicial(const string& nodoInicial);
-    void insertarVertice(const string& nombre, int x, int y);
-    void generarAristasDirigidas();
-    void dijkstra(const string& nodoInicio);
-    void mostrarCamino(const string& nodoDestino) const;
+    // Métodos 
+    void insertarVertice(const std::string& nombre, int x, int y); 
+    void insertarArista(const std::string& nodo, const std::string& vecino, int distancia); 
+    void generarAristasDirigidas(); 
+    void setNodoInicial(const std::string& nodoInicial); 
+    int calcularDistancia(const Vertice& v1, const Vertice& v2)  const; 
+    void TresVerticesCercanos(const Vertice& vertice); 
+    std::unordered_map<std::string, int> dijkstra(const std::string& nodoInicial) const; 
+    std::string obtenerSiguienteNodo(const std::string& nodoActual, const std::string& nodoDestino); 
+    int obtenerDireccionX(const std::string& nodo) const; 
+    int obtenerDireccionY(const std::string& nodo) const;  
+    void agregarFantasmaAleatorio(Grafo& grafo, Tablero& tablero, int maxFilas, int maxColumnas, const std::string& pacmanNodo, int cerezaX, int cerezaY); 
 };
-
-
 #endif // GRAFO_H
