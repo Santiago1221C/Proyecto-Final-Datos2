@@ -1,0 +1,39 @@
+
+Tablero numero 1:
+P - - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - C 
+- - - - - - - F 
+
+
+Tablero numero 2:
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - P 
+- - - - - - - F 
+
+Pac-Man comió la cereza! 
+es momento de comerce al fantasma!
+
+
+Tablero numero 3:
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+- F - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - P 
+
+Pac-Man alcanzó el fantasma! 
+FELICITACIONES!!!!! 
+

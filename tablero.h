@@ -15,7 +15,7 @@ public:
     Tablero();//constructor vacio
 
     // Métodos
-    void imprimirTablero()const;
+    void imprimirTablero(ofstream&  archivo ) const;
     void actualizarPosicion(int x, int y , char simbolo);
     char obtenerPosicion(int x , int y )const;
 };

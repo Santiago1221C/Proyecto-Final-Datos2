@@ -1,5 +1,6 @@
 #include "tablero.h"
 #include <iostream>
+#include <fstream>
 #include <vector>
 extern bool debugMode;
 using namespace std;
@@ -12,13 +13,21 @@ Tablero::Tablero(int filas, int columnas) { // Constructor que recibe el tamaño
 }
 
 // metodo para imprimir un tablero
-void Tablero::imprimirTablero() const {
+void Tablero::imprimirTablero(ofstream& archivo) const {
+
+    if (!archivo.is_open()) {
+        cerr << "No se pudo abrir el archivo." << endl;
+        return;
+    }
+    
     for (const auto& fila : tablero) {
         for (char celda : fila) {
-            cout << celda << ' ';
+            archivo << celda << ' ';
         }
-        cout << endl;
+        archivo << '\n';
     }
+    
+    archivo << '\n';
 }
 
 // Método para actualizar una posición en el tablero
