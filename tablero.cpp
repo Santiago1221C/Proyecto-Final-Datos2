@@ -1,9 +1,7 @@
 #include "tablero.h"
 #include <iostream>
-#include <fstream>
-#include <vector>
-extern bool debugMode;
 using namespace std;
+
 Tablero::Tablero() {} // Constructor vacío
 
 Tablero::Tablero(int filas, int columnas) { // Constructor que recibe el tamaño del tablero
@@ -20,32 +18,76 @@ void Tablero::imprimirTablero(ofstream& archivo) const {
         return;
     }
     
-    for (const auto& fila : tablero) {
-        for (char celda : fila) {
-            archivo << celda << ' ';
-        }
-        archivo << '\n';
+     // Imprimir números de columna
+    archivo << "  ";
+    for (int j = 0; j < columnas; ++j) {
     }
+    archivo << "\n";
     
-    archivo << '\n';
+    // Imprimir tablero con números de fila
+    for (int i = 0; i < filas; ++i) {
+        for (int j = 0; j < columnas; ++j) {
+            archivo << tablero[i][j] << " ";
+        }
+        archivo << "\n";
+    }
+    archivo << "\n";
 }
+
+//metodo para imprimir en consola 
+void Tablero::imprimirConsola() const {
+    // Imprimir números de columna
+    cout << "  ";
+    for (int j = 0; j < columnas; ++j) {
+    }
+    cout << "\n";
+    
+    // Imprimir tablero con números de fila
+    for (int i = 0; i < filas; ++i) {
+        for (int j = 0; j < columnas; ++j) {
+            cout << tablero[i][j] << " ";
+        }
+        cout << "\n";
+    }
+    cout << "\n";
+}
+
 
 // Método para actualizar una posición en el tablero
 void Tablero::actualizarPosicion(int x, int y, char simbolo) {
-    if (x >= 0 && x < filas && y >= 0 && y < columnas) {
+    if (posicionValida(x, y)) {
         tablero[x][y] = simbolo;
-        if (debugMode) {
-            cout << "Posición actualizada en (" << x << ", " << y << ") con símbolo '" << simbolo << "'" << endl;
-        }
-    } else if (debugMode) {
-        cout << "Error: Intento de actualizar fuera de límites en (" << x << ", " << y << ")" << endl;
     }
 }
 
+
 //Método para obtener el símbolo de una posición en el tablero
 char Tablero::obtenerPosicion(int x, int y) const { 
-    if (x >= 0 && x < filas && y >= 0 && y < columnas) {
+    if (posicionValida(x, y)) {
             return tablero[x][y];
         }
         return '\0'; // Devuelve un caracter nulo si la posición no está en el tablero
     }
+
+//MEtodo para marcar temporalmente los nodos visitados 
+void Tablero::marcarVisitado(int x, int y) {
+    if (posicionValida(x, y) && tablero[x][y] == '-') {
+        tablero[x][y] = '.';
+    }
+}
+
+// Método para verificar si una posición es válida en el tablero
+bool Tablero::posicionValida(int x, int y) const {
+    return x >= 0 && x < filas && y >= 0 && y < columnas;
+}
+
+// Método para limpiar los '.' de los nodos visitados
+void Tablero::limpiarVisitados() {
+    for (int i = 0; i < filas; ++i) {
+        for (int j = 0; j < columnas; ++j) {
+            if (tablero[i][j] == '.') {
+                tablero[i][j] = '-';
+            }
+        }
+    }
+}

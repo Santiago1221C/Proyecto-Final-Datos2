@@ -19,9 +19,9 @@ struct Arista {
 
 class Grafo {
     private:
-    std::unordered_map<std::string, Vertice> vertices;  // Mapa de vértices
-    std::unordered_map<std::string, std::unordered_map<std::string, Arista>> grafo;  // Mapa de adyacencia para aristas
-    std::string primerNodo;  // Nodo inicial para el grafo
+    unordered_map<std::string, Vertice> vertices;  // Mapa de vértices
+    unordered_map<std::string, std::unordered_map<std::string, Arista>> grafo;  // Mapa de adyacencia para aristas
+    string primerNodo;  // Nodo inicial para el grafo
     public:
     Grafo(); // Constructor
     ~Grafo(); // Destructor
@@ -33,10 +33,10 @@ class Grafo {
     void setNodoInicial(const std::string& nodoInicial); 
     int calcularDistancia(const Vertice& v1, const Vertice& v2)  const; 
     void TresVerticesCercanos(const Vertice& vertice); 
-    std::unordered_map<std::string, int> dijkstra(const std::string& nodoInicial) const; 
-    std::string obtenerSiguienteNodo(const std::string& nodoActual, const std::string& nodoDestino); 
-    int obtenerDireccionX(const std::string& nodo) const; 
-    int obtenerDireccionY(const std::string& nodo) const;  
+    vector<string>dijkstra(const string& nodoInicial,const string& nodoDestino, Tablero& tablero) const ;
+    string obtenerSiguienteNodo(const string& nodoActual, const string& nodoDestino, Tablero& tablero); 
+    int obtenerDireccionX(const string& nodo) const; 
+    int obtenerDireccionY(const string& nodo) const;  
     void agregarFantasmaAleatorio(Grafo& grafo, Tablero& tablero, int maxFilas, int maxColumnas, const std::string& pacmanNodo, int cerezaX, int cerezaY); 
 };
 #endif // GRAFO_H

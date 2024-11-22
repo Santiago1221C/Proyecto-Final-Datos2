@@ -1,5 +1,6 @@
 #include <iostream>
 #include <unordered_map>
+#include <unordered_set>
 #include <string>
 #include <algorithm>
 #include <limits>
@@ -62,9 +63,13 @@ void Grafo::insertarArista(const string& nodo, const string& vecino, int distanc
 
 // Generar aristas dirigidas a los tres vértices más cercanos para cada nodo
 void Grafo::generarAristasDirigidas() {
-    for (const auto& [nombre, vertice] : vertices) {
-        TresVerticesCercanos(vertice);
-    }
+    for (const auto& [nombre, vertice] : vertices) { // Generar aristas a los nodos adyacentes 
+    for (const auto& [nombreVecino, verticeVecino] : vertices) { 
+        if (nombre != nombreVecino) { int distancia = calcularDistancia(vertice, verticeVecino); 
+        insertarArista(nombre, nombreVecino, distancia); 
+        } 
+    } 
+}
 }
 
 // Establecer el nodo inicial
@@ -73,8 +78,20 @@ void Grafo::setNodoInicial(const string& nodoInicial) {
 }
 
 // Algoritmo de Dijkstra para encontrar el camino más corto desde un nodo inicial
-unordered_map<string, int> Grafo::dijkstra(const string& nodoInicial) const {
+vector<string> Grafo::dijkstra(const string& nodoInicial, const string& nodoDestino, Tablero& tablero) const {
+    // Validar existencia de los nodos
+    if (vertices.find(nodoInicial) == vertices.end() || vertices.find(nodoDestino) == vertices.end()) {
+        if (debugMode) {
+            cout << "Error: Nodo inicial o destino no existen en el grafo." << endl;
+        }
+        return {};
+    }
+
+    // Inicialización
     unordered_map<string, int> distancias;
+    unordered_map<string, string> previo;
+    unordered_set<string> visitados; // Nodos ya procesados
+
     for (const auto& [nombre, _] : vertices) {
         distancias[nombre] = numeric_limits<int>::max();
     }
@@ -84,44 +101,61 @@ unordered_map<string, int> Grafo::dijkstra(const string& nodoInicial) const {
     cola.push({0, nodoInicial});
 
     while (!cola.empty()) {
-        auto [distanciaActual, nodoActual] = cola.top(); // Obtener el nodo con menor distancia
+        auto [distanciaActual, nodoActual] = cola.top();
         cola.pop();
 
-        if (distanciaActual > distancias[nodoActual]) continue;
+        // Verificar si ya fue visitado
+        if (visitados.find(nodoActual) != visitados.end()) continue;
+        visitados.insert(nodoActual);
 
-        for (const auto& [vecino, arista] : grafo.at(nodoActual)) {  // Recorrer todos los vecinos del nodo actual
-            if (grafo.find(nodoActual) == grafo.end()) {
-        if (debugMode) {
-            cout << "Error: Nodo " << nodoActual << " no encontrado en grafo durante Dijkstra." << endl;
-        }
-        continue;
-    }
-            int nuevaDistancia = distanciaActual + arista.distancia;
-            if (nuevaDistancia < distancias[vecino]) {
-                distancias[vecino] = nuevaDistancia;
-                cola.push({nuevaDistancia, vecino});
+        // Marcar como visitado en el tablero
+        int xActual = obtenerDireccionX(nodoActual);
+        int yActual = obtenerDireccionY(nodoActual);
+        tablero.marcarVisitado(xActual, yActual);
+
+        // Si alcanzamos el destino, no necesitamos procesar más
+        if (nodoActual == nodoDestino) break;
+
+        // Procesar vecinos
+        if (grafo.find(nodoActual) != grafo.end()) {
+            for (const auto& [vecino, arista] : grafo.at(nodoActual)) {
+                if (visitados.find(vecino) != visitados.end()) continue;
+
+                int nuevaDistancia = distanciaActual + arista.distancia;
+                if (nuevaDistancia < distancias[vecino]) {
+                    distancias[vecino] = nuevaDistancia;
+                    previo[vecino] = nodoActual;
+                    cola.push({nuevaDistancia, vecino});
+                }
             }
         }
     }
-    return distancias;
+
+    // Reconstruir el camino
+    vector<string> camino;
+    if (previo.find(nodoDestino) == previo.end()) {
+        if (debugMode) {
+            cout << "No hay camino desde " << nodoInicial << " hasta " << nodoDestino << endl;
+        }
+        return {};
+    }
+
+    for (string at = nodoDestino; at != nodoInicial; at = previo[at]) {
+        camino.push_back(at);
+    }
+    camino.push_back(nodoInicial);
+    reverse(camino.begin(), camino.end());
+
+    return camino;
 }
 
 // Obtener el siguiente nodo en el camino más corto
-string Grafo::obtenerSiguienteNodo(const string& nodoActual, const string& nodoDestino) {
-    if (grafo.find(nodoActual) == grafo.end()) {
-        if (debugMode) {
-            cout << "Error: Nodo " << nodoActual << " no encontrado en grafo en obtenerSiguienteNodo." << endl;
-        }
-        return nodoDestino;
-    }   
-    auto distancias = dijkstra(nodoActual);
-    string siguienteNodo = nodoDestino;
-    for (const auto& [vecino, _] : grafo[nodoActual]) {
-        if (distancias[vecino] < distancias[siguienteNodo]) {
-            siguienteNodo = vecino;
-        }
+string Grafo::obtenerSiguienteNodo(const string& nodoActual, const string& nodoDestino, Tablero& tablero) {
+    vector<string> camino = dijkstra(nodoActual,nodoDestino, tablero);
+    if (camino.size() > 1) {
+        return camino[1]; // El siguiente nodo en el camino
     }
-    return siguienteNodo;
+    return nodoActual; // Si no hay camino, quedarse en el mismo lugar
 }
 
 // Obtener coordenada X de un nodo
